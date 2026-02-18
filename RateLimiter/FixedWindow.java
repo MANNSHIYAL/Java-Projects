@@ -10,7 +10,7 @@ public class FixedWindow {
         this.currentProcessingRequests = 0;
     }
 
-    public boolean isRequestAllowed(){
+    public synchronized  boolean isRequestAllowed(){
         long currentTime = System.currentTimeMillis();
 
         if(currentTime - this.windowStartTime >= 1000){
