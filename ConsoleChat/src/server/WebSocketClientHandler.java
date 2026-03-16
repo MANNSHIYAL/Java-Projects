@@ -1,5 +1,6 @@
 package server;
 
+import commands.InvalidCommand;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.net.ssl.SSLSocket;
@@ -19,13 +20,28 @@ public class WebSocketClientHandler {
                 return;   
             }
             WebSocketDecoder decoder = new WebSocketDecoder();
+            // Websocket Server to ChatServer
             while (true) { 
                 String messageReceived = decoder.decodeMessage(in);
                 String peerMessageType = "\"type\": " + ChatType.PEER.name();
+                String roomMessageType = "\"type\": " + ChatType.ROOM.name();
+                String command = "";
+                String userCommand = "";
                 if(messageReceived.contains(peerMessageType)){
                     // send message to chat server to forward it to peer
-                }else{
+
+                }else if(messageReceived.contains(roomMessageType)){
                     // send message to chat server to forward it to room
+                }else{
+                    // command
+                    switch (command) {
+                        case "connect", "disconnect", "exit"  -> 
+                            ChatManager.peerCommand(userCommand);
+                        case "join", "delete", "leave" ->
+                            ChatManager.roomCommand(userCommand);
+                        default ->  
+                            throw new InvalidCommand();
+                    }
                 }
             }
         } catch (Exception e) {

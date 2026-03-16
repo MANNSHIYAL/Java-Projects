@@ -30,6 +30,6 @@ public class WebSocketHandShake {
         } catch (IOException e) {
             System.err.println( "I/O Exception occured: " + e.getMessage());
         }
-        return true ;
+        return true;
     }
 }

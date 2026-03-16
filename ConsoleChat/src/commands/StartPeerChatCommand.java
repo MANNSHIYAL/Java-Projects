@@ -1,5 +1,6 @@
 package commands;
 
+import data.Data;
 import server.ClientHandler;
 
 public class StartPeerChatCommand implements Command {
@@ -17,8 +18,8 @@ public class StartPeerChatCommand implements Command {
         connectWithPeer();
     }
 
-    private static synchronized  void connectWithPeer(){
-        
+    private static synchronized void connectWithPeer(){
+        Data.setPeerConnection("", "");
     }
 
 }

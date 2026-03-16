@@ -1,20 +1,31 @@
 package commands;
 
-import exception.InvalidCommandException;
 import server.ClientHandler;
 
 public class CommandFactory {
-    public static Command getCommand(String command, ClientHandler client) throws Exception{
-
-        String[] splits = command.split(" ");
-
-        if (splits[0].contains("/connect")) {
-            return new StartPeerChatCommand(client,splits[1]);
-        }
-        if (splits[0].contains("/disconnect")) {
-            
+    public static Command getCommand(String command, ClientHandler client) {
+        String[] splits = command.trim().split("\\s+");
+        if (splits.length == 0) {
+            return new InvalidCommand();
         }
 
-        return (Command) new InvalidCommandException();
+        String cmd = splits[0].toLowerCase();
+
+        switch (cmd) {
+            case "/connect" -> {
+                if (splits.length < 2) return new InvalidCommand();
+                return new StartPeerChatCommand(client, splits[1]);
+            }
+            case "/disconnect" -> {
+                if (splits.length < 2) return new EndPeerChatCommand(client, splits[1]);
+                return new EndPeerChatCommand(client, null);
+            }
+            case "/exit" -> {
+                return new ExitCommand(splits[1]);
+            }
+            default -> {
+                return new InvalidCommand();
+            }
+        }
     }
 }
