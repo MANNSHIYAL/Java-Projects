@@ -21,7 +21,8 @@ public class SecureConnection {
     private static int port;
 
     public SecureConnection() throws IOException {
-        this.properties.load(new FileInputStream("./application.properties"));
+        // this.properties.load(new FileInputStream("./application.properties"));
+        this.properties.load(SecureConnection.class.getClassLoader().getResourceAsStream("application.properties"));
         SecureConnection.port = Integer.parseInt(this.properties.getProperty("port"));
     }
 

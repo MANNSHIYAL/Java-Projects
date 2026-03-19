@@ -1,36 +1,33 @@
 package util;
 // Convert the message into the json string for the frame payload
 
+import java.lang.ProcessBuilder.Redirect.Type;
+import java.util.HashMap;
 import java.util.Map;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.gson.Gson;
+
 import model.ChatType;
 import model.Message;
+
+
 
 public class JsonUtil {
     public static Message jsonToMessage(String json){
         return new Message(json, json, json,ChatType.COMMAND);
     }
 
-    public static Map<String,Object> jsonToMap(String json) throws ScriptException {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByExtension("json");
+    public static Map<String, Object> parseJson(String json) {
+        Gson gson = new Gson();
+        java.lang.reflect.Type type = new com.google.gson.reflect.TypeToken<Map<String, Object>>(){}.getType();
 
-        if(engine == null){
-            throw new RuntimeException("Json parser enginer not found!");
-        }
-
-        String script = "Java.asJSONCompatible(" + json + ")";
-
-        Object result = engine.eval(script);
-        
-        if (result instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>) result;
-            return map;
-        } else {
-            throw new ScriptException("JSON conversion did not result in a Map.");
-        }
+        Map<String, Object> map = gson.fromJson(json, type);
+        return map;
+    }
+    public static <T> String jsonToString(T object){
+        Gson gson = new Gson();
+        return gson.toJson(object);
     }
 }

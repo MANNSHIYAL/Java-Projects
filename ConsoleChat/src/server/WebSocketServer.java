@@ -1,11 +1,9 @@
 package server;
 
 import connection.SecureConnection;
-import java.util.Map;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
-import util.JsonUtil;
 
 // This class is responsible for the TCP secure TCP connection and assigning thread to each client and a chat room
 public class WebSocketServer {
@@ -24,24 +22,7 @@ public class WebSocketServer {
         String from = "sdfas";
         String to = "sfda";
         try {
-            while (true) { 
-                System.out.println("{ " + 
-                "\"message\": " + message +
-                "\"type\": " + type + 
-                "\"from\": " + from +
-                (to != null ? "\"to\": " + to : "") + 
-                " }");
-                Map<String,Object> map = JsonUtil.jsonToMap("{ " + 
-                "\"message\": " + message +
-                "\"type\": " + type + 
-                "\"from\": " + from +
-                (to != null ? "\"to\": " + to : "") + 
-                " }");
-                for (Map.Entry<String, Object> en : map.entrySet()) {
-                    Object key = en.getKey();
-                    Object val = en.getValue();
-                    System.out.println(key + " : " + val);
-                }
+            while (true) {
                 SSLSocket client = (SSLSocket)serverSocket.accept();
                 new Thread(() -> WebSocketClientHandler.handleClient(client)).start();
             }
