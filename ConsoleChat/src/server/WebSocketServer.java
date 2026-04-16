@@ -17,10 +17,10 @@ public class WebSocketServer {
 
         System.out.println("Websocket started at port: " + serverSocket.getLocalPort());
         // Websocket server to Websocket Client Handler 
-        String message = "asassa";
-        String type = "sdfsa";
-        String from = "sdfas";
-        String to = "sfda";
+        // String message = "asassa";
+        // String type = "sdfsa";
+        // String from = "sdfas";
+        // String to = "sfda";
         try {
             while (true) {
                 SSLSocket client = (SSLSocket)serverSocket.accept();

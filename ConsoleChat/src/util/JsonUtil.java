@@ -26,6 +26,7 @@ public class JsonUtil {
         Map<String, Object> map = gson.fromJson(json, type);
         return map;
     }
+    
     public static <T> String jsonToString(T object){
         Gson gson = new Gson();
         return gson.toJson(object);

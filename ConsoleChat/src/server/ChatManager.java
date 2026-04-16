@@ -12,18 +12,18 @@ import commands.CommandFactory;
 // a client will be broadcasted to all the associated room members
 public class ChatManager{
 
-    protected static synchronized void peerCommand(String userCommand){
+    protected static void peerCommand(String userCommand){
         Command command = CommandFactory.getCommand(userCommand, new ClientHandler());
         command.execute();
     }
-    protected static synchronized void roomCommand(String userCommand){
+    protected static void roomCommand(String userCommand){
         Command  command = CommandFactory.getCommand(userCommand, new ClientHandler());
         command.execute();
     }
-    protected static synchronized void peerMessage(){
+    protected static void peerMessage(){
 
     }
-    protected static synchronized void chatMessage(){
+    protected static void chatMessage(){
         
     }
 }
