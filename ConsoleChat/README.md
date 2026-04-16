@@ -20,3 +20,6 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 ## Hashcode format
 - `Peer`: Peer1@Peer2
 - `Chat`: ChatRoom@Creater
+
+## Special Character
+`$&$`: Trying to use it to seperate key-value pairs.
