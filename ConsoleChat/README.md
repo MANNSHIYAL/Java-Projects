@@ -23,3 +23,6 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 
 ## Special Character
 `$&$`: Trying to use it to seperate key-value pairs.
+
+
+- This current architecture is not the best architecture it's just a prototype. However a better architecture will use a ConcurrentQueue based messaging system where there will be a queue for each connected user.

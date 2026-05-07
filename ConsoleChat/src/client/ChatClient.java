@@ -27,6 +27,7 @@ public class ChatClient {
                 String userInput = sc.nextLine();
                 UserCommand command = null;
                 Message message = null;
+                // Condition will check whether it is a command or a simple message and set the variables accordingly.
                 if(userInput.toLowerCase().startsWith("/connect")){
                     // Connect Peer
                     // CommandFactory.getCommand(userInput, client);
@@ -34,6 +35,7 @@ public class ChatClient {
                     if(chatType == null){
                         chatType = ChatType.PEER;
                     }else {
+                        // Need to check this think cause I forgot why I have this message.
                         System.out.println("Already connected to a room chat. Please either create a new connection with the peer or leave this room chat first to connect with the peer.");
                     }
                 }else if(userInput.toLowerCase(null).startsWith("/disconnect")){
@@ -58,6 +60,7 @@ public class ChatClient {
                     // Message
                     message = new Message(userInput, client.getUser(), peer, ChatType.PEER);
                 }
+                // After setting the variables here the command/message will be sent to the server as a encoded json.
             }
             System.out.println("-----------------GOOD BYE-----------------");
         }

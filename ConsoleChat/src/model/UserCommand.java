@@ -17,6 +17,6 @@ public class UserCommand {
     }
     @Override
     public String toString(){
-        return JsonUtil.jsonToString("");
+        return JsonUtil.jsonToString(this);
     }
 }
