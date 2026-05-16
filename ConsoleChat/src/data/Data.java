@@ -1,33 +1,34 @@
 package data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-
+// This will only be accessible to the server to maintaing connections between clients.
 public class Data {
-    private static final HashSet<String> peerConnection = new HashSet<>();
-    private static final HashMap<String, ArrayList<String>> roomChat = new HashMap<>();
+    private static final Set<String> activeClients = ConcurrentHashMap.newKeySet();
+    private static final Set<String> peerConnection = ConcurrentHashMap.newKeySet();
+    
+    private static final ConcurrentHashMap<String, List<String>> roomChat = new ConcurrentHashMap<>();
 
-    public static synchronized void setPeerConnection(String peer1, String peer2){
+
+    public static void setPeerConnection(String peer1, String peer2){
         String key = createPeerConnectionKey(peer1, peer2);
         if(!peerConnection.contains(key)){
             peerConnection.add(key);
         }
     }
-    public static synchronized void removePeerConnection(String key){
+    public static void removePeerConnection(String key){
         if (isPeerConnection(key)) {
             peerConnection.remove(key);
         }
     }
 
-    public static synchronized boolean isPeerConnection(String key){
+    public static boolean isPeerConnection(String key){
         return peerConnection.contains(key);
     }
 
-    public static synchronized String getPeerConnectionKey(String peer1, String peer2){
+    public static String getPeerConnectionKey(String peer1, String peer2){
         return createPeerConnectionKey(peer1, peer2);
     }
 
@@ -36,22 +37,21 @@ public class Data {
         return key;
     }
 
-    public static synchronized void removeAllPeerConnection(String peer){
-        ArrayList<String> keys = new ArrayList<>();
-        peerConnection.forEach((connection) -> {
-            if(connection.contains(peer)){
-                keys.add(connection);
-            }
+    public static void removeAllPeerConnection(String peer){
+        // Remove peer from the 1-0-1 connection
+        peerConnection.removeIf(connection -> connection.contains(peer));
+        
+        // Clean up rooms
+        roomChat.forEach((roomName, members) -> {
+            members.remove(peer);
         });
-        peerConnection.removeAll(keys);
-        removeConnections(peer);
     } 
 
-    private static CompletableFuture<Void> removeConnections(String peer) {
-    for (Map.Entry<String, ArrayList<String>> room : roomChat.entrySet()) {
-        room.getValue().remove(peer);
+    public static boolean isClientActive(String peer){
+        return activeClients.contains(peer);
     }
-    return CompletableFuture.completedFuture(null);
-}
 
+    public static void addNewActiveClient(String peer){
+        activeClients.add(peer);
+    }
 }

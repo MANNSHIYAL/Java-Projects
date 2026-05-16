@@ -19,9 +19,11 @@ public class WebSocketClientHandler {
             if (handShake.doHandShake(in, out)) {
                 return;   
             }
+            // TODO: Add a list of active clients so that whenever a user tries the connect to a peer then if it is not connected server can send a message that the "User you are trying to reach is not active."
             WebSocketDecoder decoder = new WebSocketDecoder();
             // Websocket Server to ChatServer
             while (true) { 
+                // Here the "in" will be a base64 string which will be converted to packet object and then that packet will be used by the server to process the packet data
                 String messageReceived = decoder.decodeMessage(in);
                 String peerMessageType = "\"type\": " + ChatType.PEER.name();
                 String roomMessageType = "\"type\": " + ChatType.ROOM.name();

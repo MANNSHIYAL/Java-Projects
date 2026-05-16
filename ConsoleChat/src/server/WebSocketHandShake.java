@@ -1,4 +1,4 @@
-package websocket;
+package server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Scanner;
 
-// This class will help the websocket handshake between the client and the server
+// This class will help the websocket handshake between the client and the server. Server converts the normal HTTP protocol to websocket protocol
 public class WebSocketHandShake {
     public boolean doHandShake(InputStream in,OutputStream out) throws IOException, NoSuchAlgorithmException {
         try {

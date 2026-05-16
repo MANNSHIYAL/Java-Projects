@@ -3,22 +3,31 @@ package connection;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Properties;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class SecureConnection {
 
     private Properties properties = new Properties();
     private static int port;
+    private static String PROTOCOL = "TLS";
+    private static String HOST = "localhost";
 
     public SecureConnection() throws IOException {
         // this.properties.load(new FileInputStream("./application.properties"));
@@ -42,7 +51,7 @@ public class SecureConnection {
 
     public SSLServerSocket sslSocketConnection(KeyManagerFactory keyManagerFactory) throws NoSuchAlgorithmException, KeyManagementException, IOException{
         // SSL Context
-        SSLContext sslContext = SSLContext.getInstance("TLS");
+        SSLContext sslContext = SSLContext.getInstance(PROTOCOL);
         sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
 
         // SSL Server Socket
@@ -51,5 +60,23 @@ public class SecureConnection {
 
         serverSocket.setEnabledProtocols(new String[]{"TLSv1.2", "TLSv1.3"});
         return serverSocket;
+    }
+
+    public SSLSocket byPassSecurityCheckForClient() throws NoSuchAlgorithmException, KeyManagementException, UnknownHostException, IOException{
+        SSLContext sslContext = SSLContext.getInstance(PROTOCOL);
+        sslContext.init(null, new TrustManager[]{
+            new X509TrustManager() {
+                @Override
+                public X509Certificate[] getAcceptedIssuers() { return null; }
+                @Override
+                public void checkClientTrusted(X509Certificate[] c, String a){}
+                @Override
+                public void checkServerTrusted(X509Certificate[] c, String a){}
+            }
+        }, new SecureRandom());
+        SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+        SSLSocket socket = (SSLSocket) socketFactory.createSocket(HOST,port);
+        socket.startHandshake();
+        return socket;
     }
 }

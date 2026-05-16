@@ -3,18 +3,35 @@ package client;
 // This is the entry point for any clinet from where they can join and chat.
 
 import java.util.Scanner;
+import javax.net.ssl.SSLSocket;
 import model.ChatType;
 import model.Message;
 import model.User;
 import model.UserCommand;
+import websocket.WebSocketEncoder;
 
 
 public class ChatClient {
     public static void main(String[] args) {
+
+        try{
+        }catch(Exception e){
+            System.out.println("-----------------Error establishing connection to the server!!!-----------------");
+            return;
+        }
+        
         try (Scanner sc = new Scanner(System.in)) {
+            WebSocketClientRequestHandShake webSocketClientRequestHandShake = new WebSocketClientRequestHandShake();
+            SSLSocket socket = webSocketClientRequestHandShake.requestHandShake();
+
+            // Listner thread -> Listens to the messages comming from the server.
+            WebSocketClient webSocketClient = new WebSocketClient(socket);
+            new Thread(webSocketClient).start();
+
             System.out.println("Please enter you name and hit enter: ");
             String clientName = sc.next();
             
+            // This is for the client input to send messages/command to the server/peer.
             User client = new User(clientName);
             String peer = "";
             ChatType chatType = null; 
@@ -63,6 +80,8 @@ public class ChatClient {
                 // After setting the variables here the command/message will be sent to the server as a encoded json.
             }
             System.out.println("-----------------GOOD BYE-----------------");
+        }catch(Exception e){
+
         }
     }
 }
