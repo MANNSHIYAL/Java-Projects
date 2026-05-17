@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 public class WebSocketDecoder {
     public String decodeMessage(InputStream in) throws IOException{
-        String message = "";
+        String base64String = "";
         int b1 = in.read();
         if(b1 == -1) return null;
 
@@ -41,9 +41,9 @@ public class WebSocketDecoder {
                 payload[i] = (byte) (in.read()^mask[i%4]);
             }
 
-            message = new String(payload,"UTF-8");
+            base64String = new String(payload,"UTF-8");
         }
-        return message;
+        return base64String;
 
     } 
 }

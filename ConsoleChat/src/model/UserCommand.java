@@ -3,6 +3,8 @@ package model;
 import java.util.Map;
 import util.JsonUtil;
 
+// This will be sent by the User to the server and the rest of the commands will be user be the serrver.
+
 public class UserCommand {
     private String command;
     private String instruction;
@@ -18,5 +20,12 @@ public class UserCommand {
     @Override
     public String toString(){
         return JsonUtil.jsonToString(this);
+    }
+
+    public String getCommand(){
+        return this.command;
+    }
+    public String getInstruction(){
+        return this.instruction;
     }
 }

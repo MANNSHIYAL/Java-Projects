@@ -1,14 +1,9 @@
 package client;
 
-import java.io.ByteArrayInputStream;
-//  This will handle all the activities on the clinet side which are being handled by the WebSocketServer on the server side.
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.util.Base64;
-
 import javax.net.ssl.SSLSocket;
-
 import model.Packet;
+import util.Base64Converter;
 
 public class WebSocketClient implements Runnable {
     private final SSLSocket socket;
@@ -52,22 +47,24 @@ public class WebSocketClient implements Runnable {
 
                 // 4. Transform Base64 String back to Packet Object
                 try {
-                    Packet packet = decodePacket(base64String);
-                    // handlePacket(packet); // Your logic to route/process the packet
+                    // Packet packet = decodePacket(base64String);
+                    Packet packet = Base64Converter.decodePacket(base64String);
+                    ClientVisibleConsole clientVisibleConsole = new ClientVisibleConsole();
+                    clientVisibleConsole.handleReceivedPacket(packet);
                 } catch (Exception e) {
                     System.err.println("Failed to reconstruct Packet: " + e.getMessage());
                 }
             }
 
         }catch(Exception e){
-
+            System.err.println("Failed to read the Input: " + e.getMessage());
         }
     }
 
-    private Packet decodePacket(String base64Str) throws Exception {
-        byte[] data = Base64.getDecoder().decode(base64Str);
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
-            return (Packet) ois.readObject();
-        }
-    }
+    // private Packet decodePacket(String base64Str) throws Exception {
+    //     byte[] data = Base64.getDecoder().decode(base64Str);
+    //     try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
+    //         return (Packet) ois.readObject();
+    //     }
+    // }
 }

@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.net.ssl.SSLSocket;
 import model.ChatType;
+import model.Message;
+import model.Packet;
+import util.Base64Converter;
 import websocket.WebSocketDecoder;
-import websocket.WebSocketHandShake;
 
 // This class will be responsible to connect all the client activities 
 // including the client handshak and the other websocket processes that includes 
@@ -24,17 +26,12 @@ public class WebSocketClientHandler {
             // Websocket Server to ChatServer
             while (true) { 
                 // Here the "in" will be a base64 string which will be converted to packet object and then that packet will be used by the server to process the packet data
-                String messageReceived = decoder.decodeMessage(in);
-                String peerMessageType = "\"type\": " + ChatType.PEER.name();
-                String roomMessageType = "\"type\": " + ChatType.ROOM.name();
+                Packet packetReceived = Base64Converter.decodePacket((decoder.decodeMessage(in)));
+                Message messageReceived = packetReceived.getMessage();
+                ChatType chatType = messageReceived.getChatType();
                 String command = "";
                 String userCommand = "";
-                if(messageReceived.contains(peerMessageType)){
-                    // send message to chat server to forward it to peer
-
-                }else if(messageReceived.contains(roomMessageType)){
-                    // send message to chat server to forward it to room
-                }else{
+                if(null == chatType){
                     // command
                     switch (command) {
                         case "connect", "disconnect", "exit"  -> 
@@ -44,7 +41,26 @@ public class WebSocketClientHandler {
                         default ->  
                             throw new InvalidCommand();
                     }
+                }else switch (chatType) {
+                    case PEER -> {
+                    }
+                    case ROOM -> {
+                    }
+                    default -> {
+                        // command
+                        switch (command) {
+                            case "connect", "disconnect", "exit"  ->
+                                ChatManager.peerCommand(userCommand);
+                            case "join", "delete", "leave" ->
+                                ChatManager.roomCommand(userCommand);
+                            default ->
+                                throw new InvalidCommand();
+                        }
+                    }
                 }
+                // send message to chat server to forward it to peer
+                // send message to chat server to forward it to room
+                
             }
         } catch (Exception e) {
             System.err.println("Client Error: " + e.getMessage());
