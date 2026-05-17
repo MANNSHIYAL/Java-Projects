@@ -1,13 +1,12 @@
 package commands;
 
 import data.Data;
-import server.ClientHandler;
 
 public class EndPeerChatCommand implements Command {
     private final String key;
 
-    public EndPeerChatCommand(ClientHandler client,String peer){
-        key = Data.getPeerConnectionKey("", "");
+    public EndPeerChatCommand(String client,String peer){
+        key = Data.getPeerConnectionKey(client, peer);
     }
 
     @Override
@@ -15,7 +14,7 @@ public class EndPeerChatCommand implements Command {
         disconnectWithPeer();
     }
 
-    private synchronized void disconnectWithPeer(){
-        Data.removePeerConnection(key);
+    private void disconnectWithPeer(){
+        Data.removePeerConnection(this.key);
     }
 }

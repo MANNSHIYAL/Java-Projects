@@ -44,6 +44,5 @@ public class WebSocketDecoder {
             base64String = new String(payload,"UTF-8");
         }
         return base64String;
-
     } 
 }

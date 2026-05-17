@@ -11,7 +11,8 @@ public class ClientVisibleConsole {
             Message message = packet.getMessage();
             String peer = packet.isTo();
 
-            System.out.println(">> " + peer.toUpperCase() + ": " + message.getMessage());
+            System.out.println(peer.toUpperCase() + ": " + message.getMessage());
+            System.out.print(">> ");
         }
     }
 }

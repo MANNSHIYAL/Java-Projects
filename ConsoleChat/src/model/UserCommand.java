@@ -6,8 +6,8 @@ import util.JsonUtil;
 // This will be sent by the User to the server and the rest of the commands will be user be the serrver.
 
 public class UserCommand {
-    private String command;
-    private String instruction;
+    private final String command;
+    private final String instruction;
 
     public UserCommand(String command,String instruction){
         this.command = command;

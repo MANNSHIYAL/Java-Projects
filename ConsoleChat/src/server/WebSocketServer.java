@@ -1,6 +1,7 @@
 package server;
 
 import connection.SecureConnection;
+import java.io.IOException;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
@@ -22,7 +23,7 @@ public class WebSocketServer {
                 SSLSocket client = (SSLSocket)serverSocket.accept();
                 new Thread(() -> WebSocketClientHandler.handleClient(client)).start();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error connecting client. " + e.getMessage());
         }
     }

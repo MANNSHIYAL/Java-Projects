@@ -1,9 +1,7 @@
 package commands;
 
-import server.ClientHandler;
-
 public class CommandFactory {
-    public static Command getCommand(String command, ClientHandler client) {
+    public static Command getCommand(String command, String client) {
         String[] splits = command.trim().split("\\s+");
         if (splits.length == 0) {
             return new InvalidCommand();

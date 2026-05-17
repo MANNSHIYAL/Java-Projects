@@ -1,9 +1,11 @@
 package server;
 
-// This class will manage the client like who is talking to whom
-
 import commands.Command;
 import commands.CommandFactory;
+import data.Data;
+import java.io.IOException;
+import java.io.OutputStream;
+import model.Message;
 
 // Is the client is talking to a peer or to the room.
 
@@ -12,18 +14,21 @@ import commands.CommandFactory;
 // a client will be broadcasted to all the associated room members
 public class ChatManager{
 
-    protected static void peerCommand(String userCommand){
-        Command command = CommandFactory.getCommand(userCommand, new ClientHandler());
+    protected static void peerCommand(String userCommand,String sender){
+        Command command = CommandFactory.getCommand(userCommand,sender);
         command.execute();
     }
-    protected static void roomCommand(String userCommand){
-        Command  command = CommandFactory.getCommand(userCommand, new ClientHandler());
+    protected static void roomCommand(String userCommand,String sender){
+        Command  command = CommandFactory.getCommand(userCommand,sender);
         command.execute();
     }
-    protected static void peerMessage(){
-
+    protected static void peerMessage(OutputStream out,Message message,String sender,String receiver) throws IOException{
+        MessageExchanger.forwardMessageToReceiver(out,message, sender, receiver);
     }
-    protected static void chatMessage(){
-        
+    protected static void chatMessage(OutputStream out,Message message,String sender) throws IOException{
+        MessageExchanger.forwardMessageToReceiver(out,message, sender,"");
+    }
+    protected static void activeClient(String client){
+        Data.addNewActiveClient(client);
     }
 }

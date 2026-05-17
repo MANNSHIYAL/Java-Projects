@@ -19,9 +19,7 @@ public class Data {
         }
     }
     public static void removePeerConnection(String key){
-        if (isPeerConnection(key)) {
-            peerConnection.remove(key);
-        }
+        peerConnection.removeIf(connection -> connection.equals(key));
     }
 
     public static boolean isPeerConnection(String key){
@@ -43,15 +41,19 @@ public class Data {
         
         // Clean up rooms
         roomChat.forEach((roomName, members) -> {
-            members.remove(peer);
+            members.removeIf(m -> m.equals(peer));
         });
     } 
+
+    public static void cleanRoomConnections(){
+        // Will do later when will add the room chat functionality
+    }
 
     public static boolean isClientActive(String peer){
         return activeClients.contains(peer);
     }
 
     public static void addNewActiveClient(String peer){
-        activeClients.add(peer);
+        if(!activeClients.contains(peer)) activeClients.add(peer);
     }
 }

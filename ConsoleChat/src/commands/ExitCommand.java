@@ -3,7 +3,7 @@ package commands;
 import data.Data;
 
 public class ExitCommand implements Command {
-    private String peer;
+    private final String peer;
     public ExitCommand(String peer) {
         this.peer = peer;
     }
@@ -13,8 +13,8 @@ public class ExitCommand implements Command {
         removeAllPeerConnection();
     }
 
-    private synchronized void removeAllPeerConnection(){
-        Data.removeAllPeerConnection(peer);
+    private void removeAllPeerConnection(){
+        Data.removeAllPeerConnection(this.peer);
     }
 
 }

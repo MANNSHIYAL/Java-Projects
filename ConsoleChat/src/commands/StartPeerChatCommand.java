@@ -1,14 +1,13 @@
 package commands;
 
 import data.Data;
-import server.ClientHandler;
 
 public class StartPeerChatCommand implements Command {
 
-    private ClientHandler client;
-    private String peer;
+    private final String client;
+    private final String peer;
 
-    public StartPeerChatCommand(ClientHandler client,String peer){
+    public StartPeerChatCommand(String client,String peer){
         this.client = client;
         this.peer = peer;
     }
@@ -18,8 +17,8 @@ public class StartPeerChatCommand implements Command {
         connectWithPeer();
     }
 
-    private static synchronized void connectWithPeer(){
-        Data.setPeerConnection("", "");
+    private void connectWithPeer(){
+        Data.setPeerConnection(this.client, this.peer);
     }
 
 }
