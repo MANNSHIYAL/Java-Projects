@@ -1,8 +1,6 @@
 package server;
 
 import commands.InvalidCommand;
-import java.io.InputStream;
-import java.io.OutputStream;
 import javax.net.ssl.SSLSocket;
 import model.ChatType;
 import model.Message;
@@ -15,10 +13,9 @@ import websocket.WebSocketDecoder;
 // message encode/decode and frame management for the server
 public class WebSocketClientHandler {
     public static void handleClient(SSLSocket client) {
-        try (InputStream in = client.getInputStream();
-            OutputStream out = client.getOutputStream()) {
+        try {
             WebSocketHandShake handShake = new WebSocketHandShake();
-            if (handShake.doHandShake(in, out)) {
+            if (!handShake.doHandShake(client)) {
                 return;   
             }
             // TODO: Add a list of active clients so that whenever a user tries the connect to a peer then if it is not connected server can send a message that the "User you are trying to reach is not active."
@@ -26,14 +23,13 @@ public class WebSocketClientHandler {
             // Websocket Server to ChatServer
             while (true) { 
                 // Here the "in" will be a base64 string which will be converted to packet object and then that packet will be used by the server to process the packet data
-                Packet packetReceived = Base64Converter.decodePacket((decoder.decodeMessage(in)));
+                Packet packetReceived = Base64Converter.decodePacket((decoder.decodeMessage(client)));
                 String sender = packetReceived.isFrom();
                 String receiver = packetReceived.isTo();
                 Message messageReceived = null;
                 String command = null;
                 String userCommand = null;
                 ChatType chatType = null;
-                
                 if(packetReceived.isCommand(packetReceived)){
                     command = packetReceived.getCommand().getCommand();
                     userCommand = packetReceived.getCommand().getInstruction();
@@ -45,9 +41,9 @@ public class WebSocketClientHandler {
                 if(chatType == null){
                     // command
                     switch (command) {
-                        case "connect", "disconnect", "exit"  -> 
+                        case "/connect", "/disconnect", "/exit"  -> 
                             ChatManager.peerCommand(userCommand,sender);
-                        case "join", "delete", "leave" ->
+                        case "/join", "/delete", "/leave" ->
                             ChatManager.roomCommand(userCommand,sender);
                         default ->  
                             throw new InvalidCommand();
@@ -55,18 +51,18 @@ public class WebSocketClientHandler {
                 }else switch (chatType) {
                     case PEER -> {
                         // send message to chat server to forward it to peer
-                        ChatManager.peerMessage(out,messageReceived,sender,receiver);
+                        ChatManager.peerMessage(client,messageReceived,sender,receiver);
                     }
                     case ROOM -> {
                         // send message to chat server to forward it to room
-                        ChatManager.chatMessage(out,messageReceived,sender);
+                        ChatManager.chatMessage(client,messageReceived,sender);
                     }
                     default -> {
                         // command
                         switch (command) {
-                            case "connect", "disconnect", "exit"  ->
+                            case "/connect", "/disconnect", "/exit"  ->
                                 ChatManager.peerCommand(userCommand,sender);
-                            case "join", "delete", "leave" ->
+                            case "/join", "/delete", "/leave" ->
                                 ChatManager.roomCommand(userCommand,sender);
                             default ->
                                 throw new InvalidCommand();

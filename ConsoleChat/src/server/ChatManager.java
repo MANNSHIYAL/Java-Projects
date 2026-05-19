@@ -4,7 +4,7 @@ import commands.Command;
 import commands.CommandFactory;
 import data.Data;
 import java.io.IOException;
-import java.io.OutputStream;
+import javax.net.ssl.SSLSocket;
 import model.Message;
 
 // Is the client is talking to a peer or to the room.
@@ -22,11 +22,11 @@ public class ChatManager{
         Command  command = CommandFactory.getCommand(userCommand,sender);
         command.execute();
     }
-    protected static void peerMessage(OutputStream out,Message message,String sender,String receiver) throws IOException{
-        MessageExchanger.forwardMessageToReceiver(out,message, sender, receiver);
+    protected static void peerMessage(SSLSocket socket,Message message,String sender,String receiver) throws IOException{
+        MessageExchanger.forwardMessageToReceiver(socket,message, sender, receiver);
     }
-    protected static void chatMessage(OutputStream out,Message message,String sender) throws IOException{
-        MessageExchanger.forwardMessageToReceiver(out,message, sender,"");
+    protected static void chatMessage(SSLSocket socket,Message message,String sender) throws IOException{
+        MessageExchanger.forwardMessageToReceiver(socket,message, sender,"");
     }
     protected static void activeClient(String client){
         Data.addNewActiveClient(client);

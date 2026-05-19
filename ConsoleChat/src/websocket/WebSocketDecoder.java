@@ -4,10 +4,12 @@ package websocket;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.net.ssl.SSLSocket;
 
 public class WebSocketDecoder {
-    public String decodeMessage(InputStream in) throws IOException{
+    public String decodeMessage(SSLSocket socket) throws IOException{
         String base64String = "";
+        InputStream in = socket.getInputStream();
         int b1 = in.read();
         if(b1 == -1) return null;
 

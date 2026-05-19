@@ -19,7 +19,6 @@ public class WebSocketClientRequestHandShake {
     }
 
     private SSLSocket requestProtocolUpgrade(SSLSocket socket) throws IOException {
-
         // 1. WebSocket Handshake Request
         String key = Base64.getEncoder().encodeToString(new byte[16]);
         String upgradeProtocolRequest = "GET / HTTP/1.1\r\n"

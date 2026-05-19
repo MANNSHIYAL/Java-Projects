@@ -1,11 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Map;
 import util.JsonUtil;
 
 // This will be sent by the User to the server and the rest of the commands will be user be the serrver.
 
-public class UserCommand {
+public class UserCommand implements Serializable {
+    private static final long serialVersionUID = 1L; 
     private final String command;
     private final String instruction;
 

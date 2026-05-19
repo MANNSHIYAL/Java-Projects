@@ -4,8 +4,8 @@ package model;
 import java.io.Serializable;
 
 public class Packet implements Serializable {
-    private UserCommand command = null;
-    private Message message = null;
+    private UserCommand command;
+    private Message message;
 
     private static final long serialVersionUID = 1L; 
 

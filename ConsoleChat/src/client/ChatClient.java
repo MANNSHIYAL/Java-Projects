@@ -101,11 +101,12 @@ public class ChatClient {
                         packet.setFrom(client.getUser());
                         packet.setTo(userInput.split(" ")[1]);
                         packet.setCommand(command);
+                        System.out.println("-----------------GOOD BYE-----------------");
                     }else {
                         // This message will shown when a user will try to connect to another room or chat while it is conected to a peer.
                         System.out.println("Already connected to a room chat. Please either create a new connection with the peer or leave this room chat first to connect with the peer.");
                     }
-                    break;
+                    return;
                 }else {
                     // Message
                     // Make changes to send it through packet
@@ -119,9 +120,8 @@ public class ChatClient {
                 // Packet will be converted to base64 and then will be shared through the
             
                 // Send masked frames
-                WebSocketFrame.sendMaskedFrame(socket.getOutputStream(), packet);
+                WebSocketFrame.sendMaskedFrame(socket, packet);
             }
-            System.out.println("-----------------GOOD BYE-----------------");
         }catch(Exception e){
 
         }

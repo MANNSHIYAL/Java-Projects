@@ -7,11 +7,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Scanner;
+import javax.net.ssl.SSLSocket;
 
 // This class will help the websocket handshake between the client and the server. Server converts the normal HTTP protocol to websocket protocol
 public class WebSocketHandShake {
-    public boolean doHandShake(InputStream in,OutputStream out) throws IOException, NoSuchAlgorithmException {
+    public boolean doHandShake(SSLSocket socket) throws IOException, NoSuchAlgorithmException {
         try {
+            InputStream in = socket.getInputStream();
+            OutputStream out = socket.getOutputStream();
             Scanner sc = new Scanner(in,"UTF-8");
             String data = sc.useDelimiter("\r\n\r\n").next();
             if(!data.contains("Sec-WebSocket-Key:")) return false;
