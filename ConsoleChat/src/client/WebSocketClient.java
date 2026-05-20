@@ -33,6 +33,20 @@ public class WebSocketClient implements Runnable {
                     }
                 }
 
+                byte[] mask = new byte[4];
+                int maskRead = 0;
+                boolean streamClosed = false;
+                while (maskRead < 4) {
+                    int m = in.read(mask, maskRead, 4 - maskRead);
+                    if (m == -1) {
+                        streamClosed = true;
+                        break;
+                    }
+                    maskRead += m;
+                }
+                if (streamClosed) break;
+
+
                 // 2. Guaranteed full read of the Base64 payload
                 byte[] payload = new byte[(int) length];
                 int totalRead = 0;
@@ -42,8 +56,13 @@ public class WebSocketClient implements Runnable {
                     totalRead += read;
                 }
 
+                byte[] unmaskedPayload = new byte[payload.length];
+                for (int i = 0; i < payload.length; i++) {
+                    unmaskedPayload[i] = (byte) (payload[i] ^ mask[i % 4]);
+                }
+
                 // 3. Convert bytes to Base64 String
-                String base64String = new String(payload, "UTF-8");
+                String base64String = new String(unmaskedPayload, "UTF-8");
 
                 // 4. Transform Base64 String back to Packet Object
                 try {

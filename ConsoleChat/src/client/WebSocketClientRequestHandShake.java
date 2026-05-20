@@ -11,14 +11,14 @@ import java.util.Base64;
 import javax.net.ssl.SSLSocket;
 
 public class WebSocketClientRequestHandShake {
-    public SSLSocket requestHandShake() throws IOException,NoSuchAlgorithmException, KeyManagementException, UnknownHostException {
+    public SSLSocket requestHandShake(String client) throws IOException,NoSuchAlgorithmException, KeyManagementException, UnknownHostException {
         SecureConnection secureConnection = new SecureConnection();
         SSLSocket socket = secureConnection.byPassSecurityCheckForClient();
-        socket = requestProtocolUpgrade(socket);
+        socket = requestProtocolUpgrade(socket,client);
         return socket;
     }
 
-    private SSLSocket requestProtocolUpgrade(SSLSocket socket) throws IOException {
+    private SSLSocket requestProtocolUpgrade(SSLSocket socket,String client) throws IOException {
         // 1. WebSocket Handshake Request
         String key = Base64.getEncoder().encodeToString(new byte[16]);
         String upgradeProtocolRequest = "GET / HTTP/1.1\r\n"
@@ -26,7 +26,8 @@ public class WebSocketClientRequestHandShake {
                                         + "Upgrade: websocket\r\n"
                                         + "Connection: Upgrade\r\n"
                                         + "Sec-WebSocket-Key: " + key + "\r\n"
-                                        + "Sec-WebSocket-Version: 13\r\n\r\n";
+                                        + "Sec-WebSocket-Version: 13\r\n"
+                                        + "X-Client: " + client + "\r\n\r\n";
         socket.getOutputStream().write(upgradeProtocolRequest.getBytes());
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));

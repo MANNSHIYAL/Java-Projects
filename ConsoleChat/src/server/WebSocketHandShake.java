@@ -11,13 +11,19 @@ import javax.net.ssl.SSLSocket;
 
 // This class will help the websocket handshake between the client and the server. Server converts the normal HTTP protocol to websocket protocol
 public class WebSocketHandShake {
-    public boolean doHandShake(SSLSocket socket) throws IOException, NoSuchAlgorithmException {
+    public String doHandShake(SSLSocket socket) throws IOException, NoSuchAlgorithmException {
+        String client = null;
         try {
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
             Scanner sc = new Scanner(in,"UTF-8");
             String data = sc.useDelimiter("\r\n\r\n").next();
-            if(!data.contains("Sec-WebSocket-Key:")) return false;
+            if (data.contains("X-Client:")) {
+                String target = data.substring(data.indexOf("X-Client:") + "X-Client:".length());
+                client = target.trim();
+            }
+
+            if(!data.contains("Sec-WebSocket-Key:")) return null;
     
             String key = data.split("Sec-WebSocket-Key:")[1].split("\r\n")[0].trim();
             String accept = Base64.getEncoder().encodeToString(
@@ -33,6 +39,6 @@ public class WebSocketHandShake {
         } catch (IOException e) {
             System.err.println( "I/O Exception occured: " + e.getMessage());
         }
-        return true;
+        return client;
     }
 }

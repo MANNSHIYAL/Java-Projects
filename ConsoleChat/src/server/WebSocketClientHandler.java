@@ -12,18 +12,20 @@ import websocket.WebSocketDecoder;
 // including the client handshak and the other websocket processes that includes 
 // message encode/decode and frame management for the server
 public class WebSocketClientHandler {
-    public static void handleClient(SSLSocket client) {
+    public static void handleClient(SSLSocket socket) {
         try {
             WebSocketHandShake handShake = new WebSocketHandShake();
-            if (!handShake.doHandShake(client)) {
+            String client = handShake.doHandShake(socket);
+            if (client == null) {
                 return;   
             }
             // TODO: Add a list of active clients so that whenever a user tries the connect to a peer then if it is not connected server can send a message that the "User you are trying to reach is not active."
+            ChatManager.activeClient(client);
             WebSocketDecoder decoder = new WebSocketDecoder();
             // Websocket Server to ChatServer
             while (true) { 
                 // Here the "in" will be a base64 string which will be converted to packet object and then that packet will be used by the server to process the packet data
-                Packet packetReceived = Base64Converter.decodePacket((decoder.decodeMessage(client)));
+                Packet packetReceived = Base64Converter.decodePacket((decoder.decodeMessage(socket)));
                 String sender = packetReceived.isFrom();
                 String receiver = packetReceived.isTo();
                 Message messageReceived = null;
@@ -51,11 +53,11 @@ public class WebSocketClientHandler {
                 }else switch (chatType) {
                     case PEER -> {
                         // send message to chat server to forward it to peer
-                        ChatManager.peerMessage(client,messageReceived,sender,receiver);
+                        ChatManager.peerMessage(socket,messageReceived,sender,receiver);
                     }
                     case ROOM -> {
                         // send message to chat server to forward it to room
-                        ChatManager.chatMessage(client,messageReceived,sender);
+                        ChatManager.chatMessage(socket,messageReceived,sender);
                     }
                     default -> {
                         // command

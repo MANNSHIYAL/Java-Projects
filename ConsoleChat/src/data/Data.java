@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 // This will only be accessible to the server to maintaing connections between clients.
 public class Data {
     private static final Set<String> activeClients = ConcurrentHashMap.newKeySet();
+    // Have to make this a coucurrent hashmap of string,socket so the the message can be forwarded to another socket.
     private static final Set<String> peerConnection = ConcurrentHashMap.newKeySet();
     
     private static final ConcurrentHashMap<String, List<String>> roomChat = new ConcurrentHashMap<>();
@@ -14,7 +15,7 @@ public class Data {
 
     public static void setPeerConnection(String peer1, String peer2){
         String key = createPeerConnectionKey(peer1, peer2);
-        if(!peerConnection.contains(key)){
+        if(activeClients.contains(peer1) && activeClients.contains(peer2) && !peerConnection.contains(key)){
             peerConnection.add(key);
         }
     }
