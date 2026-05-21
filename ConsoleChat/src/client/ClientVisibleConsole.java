@@ -9,7 +9,7 @@ public class ClientVisibleConsole {
     public void handleReceivedPacket(Packet packet){
         if(!packet.isCommand(packet)){
             Message message = packet.getMessage();
-            String peer = packet.isTo();
+            String peer = packet.isFrom();
 
             System.out.println(peer.toUpperCase() + ": " + message.getMessage());
             System.out.print(">> ");

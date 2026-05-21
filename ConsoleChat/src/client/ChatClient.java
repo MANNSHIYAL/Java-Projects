@@ -46,15 +46,16 @@ public class ChatClient {
             
             // This is for the client input to send messages/command to the server/peer.
             User client = new User(clientName);
-            ChatType chatType = null; 
+            ChatType chatType = ChatType.PEER; 
             String peer = "";
             System.out.println("-----------------INSTRUCTIONS-----------------");
+            System.out.println("Default ChatType is PEER.");
             System.out.println("To connect with peer: /connect PEERNAME");
             System.out.println("To disconnect with peer: /disconnect PEERNAME");
             System.out.println("To exit chat: /exit");
             System.out.println("To send your message hit enter.");
-            System.out.print(">> ");
             while (true) {
+                System.out.print(">> ");
                 String userInput = sc.nextLine();
                 if (userInput == null || userInput.trim().isEmpty()) {
                     System.out.print(">> ");
@@ -68,41 +69,25 @@ public class ChatClient {
                     // Connect Peer
                     // CommandFactory.getCommand(userInput, client);
                     command = new UserCommand("/connect", userInput);
-                    if(chatType == null){
-                        chatType = ChatType.PEER;
-                        packet.setFrom(client.getUser());
-                        peer = userInput.split(" ")[1];
-                        packet.setTo(peer);
-                        packet.setCommand(command);
-                    }else {
-                        // Need to check this thing cause I forgot why I have this message.
-                        // This message will shown when a user will try to connect to another room or chat while it is conected to a peer.
-                        System.out.println("Already connected to a room chat. Please either create a new connection with the peer or leave this room chat first to connect with the peer.");
-                    }
+                    chatType = ChatType.PEER;
+                    packet.setFrom(client.getUser());
+                    peer = userInput.split(" ")[1];
+                    packet.setTo(peer);
+                    packet.setCommand(command);
                 }else if(userInput.toLowerCase().startsWith("/disconnect")){
                     // Disconnect Peer
                     // CommandFactory.getCommand(userInput, client);
                     command = new UserCommand("/disconnect", userInput);
-                    if(chatType == null){
-                        chatType = ChatType.PEER;
-                        packet.setFrom(client.getUser());
-                        packet.setTo(userInput.split(" ")[1]);
-                        packet.setCommand(command);
-                    }else {
-                        // This message will shown when a user will try to connect to another room or chat while it is conected to a peer.
-                        System.out.println("Already connected to a room chat. Please either create a new connection with the peer or leave this room chat first to connect with the peer.");
-                    }
+
+                    packet.setFrom(client.getUser());
+                    packet.setTo(userInput.split(" ")[1]);
+                    packet.setCommand(command);
                 }else if (userInput.toLowerCase().startsWith("/exit")) {
                     // Disconnect user and clear user connections and clear it from the server
                     command = new UserCommand("/exit", userInput);
-                    if(chatType == null){
-                        packet.setFrom(client.getUser());
-                        packet.setCommand(command);
-                        System.out.println("-----------------GOOD BYE-----------------");
-                    }else {
-                        // This message will shown when a user will try to connect to another room or chat while it is conected to a peer.
-                        System.out.println("Already connected to a room chat. Please either create a new connection with the peer or leave this room chat first to connect with the peer.");
-                    }
+                    packet.setFrom(client.getUser());
+                    packet.setCommand(command);
+                    System.out.println("-----------------GOOD BYE-----------------");
                     return;
                 }else {
                     // Message

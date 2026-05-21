@@ -1,11 +1,12 @@
 package commands;
 
 import data.Data;
+import java.util.UUID;
 
 public class EndPeerChatCommand implements Command {
     private final String key;
 
-    public EndPeerChatCommand(String client,String peer){
+    public EndPeerChatCommand(UUID client,UUID peer){
         key = Data.getPeerConnectionKey(client, peer);
     }
 

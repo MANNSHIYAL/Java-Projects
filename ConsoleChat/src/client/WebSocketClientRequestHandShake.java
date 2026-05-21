@@ -9,6 +9,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import javax.net.ssl.SSLSocket;
+import util.UUIDUtil;
 
 public class WebSocketClientRequestHandShake {
     public SSLSocket requestHandShake(String client) throws IOException,NoSuchAlgorithmException, KeyManagementException, UnknownHostException {
@@ -21,12 +22,14 @@ public class WebSocketClientRequestHandShake {
     private SSLSocket requestProtocolUpgrade(SSLSocket socket,String client) throws IOException {
         // 1. WebSocket Handshake Request
         String key = Base64.getEncoder().encodeToString(new byte[16]);
+        String clientId = UUIDUtil.getNewUUIDString(client);
         String upgradeProtocolRequest = "GET / HTTP/1.1\r\n"
                                         + "Host: localhost\r\n"
                                         + "Upgrade: websocket\r\n"
                                         + "Connection: Upgrade\r\n"
                                         + "Sec-WebSocket-Key: " + key + "\r\n"
                                         + "Sec-WebSocket-Version: 13\r\n"
+                                        + "X-Client-ID: " + clientId + "\r\n"
                                         + "X-Client: " + client + "\r\n\r\n";
         socket.getOutputStream().write(upgradeProtocolRequest.getBytes());
         

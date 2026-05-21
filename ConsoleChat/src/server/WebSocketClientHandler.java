@@ -20,7 +20,7 @@ public class WebSocketClientHandler {
                 return;   
             }
             // TODO: Add a list of active clients so that whenever a user tries the connect to a peer then if it is not connected server can send a message that the "User you are trying to reach is not active."
-            ChatManager.activeClient(client);
+            ChatManager.activeClient(client,socket);
             WebSocketDecoder decoder = new WebSocketDecoder();
             // Websocket Server to ChatServer
             while (true) { 
@@ -53,11 +53,11 @@ public class WebSocketClientHandler {
                 }else switch (chatType) {
                     case PEER -> {
                         // send message to chat server to forward it to peer
-                        ChatManager.peerMessage(socket,messageReceived,sender,receiver);
+                        ChatManager.peerMessage(messageReceived,sender,receiver);
                     }
                     case ROOM -> {
                         // send message to chat server to forward it to room
-                        ChatManager.chatMessage(socket,messageReceived,sender);
+                        ChatManager.chatMessage(messageReceived,sender);
                     }
                     default -> {
                         // command

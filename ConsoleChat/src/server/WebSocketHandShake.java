@@ -18,6 +18,11 @@ public class WebSocketHandShake {
             OutputStream out = socket.getOutputStream();
             Scanner sc = new Scanner(in,"UTF-8");
             String data = sc.useDelimiter("\r\n\r\n").next();
+            int clientIdIdx = data.indexOf("X-Client-ID:");
+            int clientNameIdx = data.indexOf("X-Client:");
+
+            
+            
             if (data.contains("X-Client:")) {
                 String target = data.substring(data.indexOf("X-Client:") + "X-Client:".length());
                 client = target.trim();
