@@ -26,3 +26,4 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 
 
 - This current architecture is not the best architecture it's just a prototype. However a better architecture will use a ConcurrentQueue based messaging system where there will be a queue for each connected user.
+- Peer-to-peer chat is working fine, however, the project needs a lot of improvements. The chat functionality is still pending but it won't be that difficult to implement as I have already implemented the basis peer-to-peer the rest will be similar to the other project that I have made.
